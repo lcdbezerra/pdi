@@ -1,0 +1,49 @@
+:source-highlighter: pygments
+:toc: left 
+:toc-title: Algoritmos
+:toclevels: 10
+
+= Processamento Digital de Imagens
+Lucas Câmara Dantas Bezerra <lucascamaradb@gmail.com>
+
+== regions.cpp
+
+----
+include::regions.cpp[]
+----
+
+== trocaregioes.cpp
+
+----
+include::trocaregioes.cpp[]
+----
+
+== labeling.cpp
+
+----
+include::labeling.cpp[]
+----
+
+== buracos.cpp
+
+----
+include::buracos.cpp[]
+----
+
+== equalize.cpp
+
+----
+include::equalize.cpp[]
+----
+
+== motiondetector.cpp
+
+----
+include::motiondetector.cpp[]
+----
+
+== laplgauss.cpp
+
+----
+include::laplgauss.cpp[]
+----
