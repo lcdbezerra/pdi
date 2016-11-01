@@ -437,6 +437,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_equalize_cpp">equalize.cpp</a></li>
 <li><a href="#_motiondetector_cpp">motiondetector.cpp</a></li>
 <li><a href="#_laplgauss_cpp">laplgauss.cpp</a></li>
+<li><a href="#_homomorfico_cpp">homomorfico.cpp</a></li>
 </ul>
 </div>
 </div>
@@ -1051,10 +1052,95 @@ int main(int argvc, char** argv){
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_homomorfico_cpp">homomorfico.cpp</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>#include &lt;iostream&gt;
+#include &lt;cv.h&gt;
+#include &lt;highgui.h&gt;
+
+/////////////////////////////////////////////
+//                                         //
+//           FILTRO HOMOMORFICO            //
+//                                         //
+/////////////////////////////////////////////
+
+// Declaracao de variaveis
+Mat complexImage, padded, filter, tmp;
+Mat_&lt;float&gt; realInput, zeros;
+vector&lt;Mat&gt; planes;
+
+if(!image.data)
+    printf("\n\tNao foi possivel carregar a imagem\n\n");
+    return;
+
+// Padding
+int dft_M = getOptimalDFTSize(image.rows), dft_N = getOptimalDFTSize(image.cols);
+copyMakeBorder(image, padded, 0,
+            dft_M - image.rows, 0,
+            dft_N - image.cols,
+            BORDER_CONSTANT, Scalar::all(0));
+
+
+zeros = Mat_&lt;float&gt;::zeros(padded.size());
+complexImage = Mat(padded.size(), CV_32FC2, Scalar(0));
+
+filter = complexImage.clone();
+
+tmp = Mat(dft_M, dft_N, CV_32F);
+
+float highFreq = (float)ui-&gt;highFreqSlider-&gt;value()/10, lowFreq = (float)ui-&gt;lowFreqSlider-&gt;value()/10, cParam  = (float)ui-&gt;cSlider-&gt;value()/10, d0 = ui-&gt;d0Slider-&gt;value();
+
+int M = dft_M, N = dft_N;
+
+for(int x=0; i&lt;dft_M; i++){
+    for(int y=0; j&lt;dft_N; j++){
+        tmp.at&lt;float&gt; (x,y) = (highFreq-lowFreq)*(1.0-exp(-1.0*(float)cParam*((((float)x-M/2.0)*((float)x-M/2.0) + ((float)y-N/2.0)*((float)y-N/2.0))/(d0*d0))))+ lowFreq;
+    }
+}
+
+Mat comps[]= {tmp, tmp};
+merge(comps, 2, filter);
+
+realInput = Mat_&lt;float&gt;(padded);
+
+planes.clear();
+planes.push_back(realInput);
+planes.push_back(zeros);
+merge(planes, complexImage);
+
+// DFT
+dft(complexImage, complexImage);
+shiftDFT(complexImage);
+
+// Filtro em frequencia
+mulSpectrums(complexImage,filter,complexImage,0);
+
+planes.clear();
+split(complexImage, planes);
+merge(planes, complexImage);
+
+shiftDFT(complexImage);
+
+// DFT inversa
+idft(complexImage, complexImage);
+
+planes.clear();
+split(complexImage, planes);
+normalize(planes[0], planes[0], 0, 1, CV_MINMAX);
+
+imshow("Original", image);
+imshow("Filtrada", planes[0]);</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-19 03:31:25 BRT
+Last updated 2016-10-30 19:53:55 BRT
 </div>
 </div>
 </body>

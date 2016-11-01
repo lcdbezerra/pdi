@@ -47,3 +47,9 @@ include::motiondetector.cpp[]
 ----
 include::laplgauss.cpp[]
 ----
+
+== homomorfico.cpp
+
+----
+include::homomorfico.cpp[]
+----
